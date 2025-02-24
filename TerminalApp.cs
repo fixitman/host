@@ -6,15 +6,17 @@ using host.ui;
 using Microsoft.Extensions.Logging;
 using Terminal.Gui;
 using Serilog;
+using Reminder_WPF.Services;
 
 
 namespace host
 {
-    public class TerminalApp
+    public class TerminalApp()
     {
         
         public async Task RunAsync(){
             await Task.Run(()=>{                
+                //Initialize UI
                 Application.Init();
                 try
                 {

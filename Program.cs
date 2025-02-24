@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using host;
+using host.ui;
+
 
 
 
@@ -15,17 +17,21 @@ internal class Program
     private static void Main(string[] args)
     {
         var host = Host.CreateDefaultBuilder()
-    .ConfigureServices(services =>
-    {
-        services.AddSingleton<TerminalApp, TerminalApp>();        
-    })
-    .Build();
+            .ConfigureServices(services =>
+        {
+            services.AddSingleton<TerminalApp>();    
+           
+        })
+        .Build();
 
+        //Set up Serilog
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
             .WriteTo.Async(a => a.File(LOGFILE,rollingInterval:RollingInterval.Month))
             .CreateLogger();
 
-        host.Services.GetRequiredService<TerminalApp>().RunAsync().Wait();
+        host.Services.GetRequiredService<TerminalApp>()
+        .RunAsync()
+        .Wait();
     }
 }
