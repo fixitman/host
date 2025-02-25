@@ -26,10 +26,11 @@ namespace host;
             return Path.Combine(appData, fileName);
         }
 
-        public T? LoadSettings() =>
+        public T? LoadSettings() => 
             File.Exists(_filePath) ?
-            JsonSerializer.Deserialize<T>(File.ReadAllText(_filePath)):
+            JsonSerializer.Deserialize<T>(File.ReadAllText(_filePath),options):
             null;
+        
 
         public void SaveSettings(T settings)
         {   
