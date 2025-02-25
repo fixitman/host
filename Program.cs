@@ -21,7 +21,7 @@ internal class Program
         {
             services.AddSingleton<TerminalApp>();    
             services.AddSingleton<MainView>();
-           
+            services.AddSingleton<SettingsManager<UserSettings>>((_) => new SettingsManager<UserSettings>(UserSettings.FILENAME));
         })
         .Build();
 

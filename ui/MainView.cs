@@ -12,16 +12,20 @@ public partial class MainView
 
 {
     private APIReminderRepo? _repo;
-    
-    public MainView(){
+    private SettingsManager<UserSettings> _setMgr;
+
+    public MainView(
+        SettingsManager<UserSettings> setMgr
+    ){
+        _setMgr = setMgr;
         InitializeComponent();  
             
         this.Loaded += Run;
     }
 
     private async void Run(){
-        SettingsManager<UserSettings> setMgr = new (UserSettings.FILENAME);
-        var settings = setMgr.LoadSettings();
+       
+        var settings = _setMgr.LoadSettings();
         string token = "";
         LoginResponse response;
         if(settings != null && 
@@ -33,7 +37,7 @@ public partial class MainView
         }else{
             response = await Login();
             token = response.token;
-            setMgr.SaveSettings(new UserSettings{token=response.token, expiration=response.expiration});
+            _setMgr.SaveSettings(new UserSettings{token=response.token, expiration=response.expiration});
             Log.Debug("Token = {token}  expires {exp}",response.token, response.expiration);
         }
         _repo = new APIReminderRepo(Constants.REPO_URL,token,Constants.REPO_PORT);
