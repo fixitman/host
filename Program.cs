@@ -31,10 +31,7 @@ internal class Program
             .WriteTo.Async(a => a.File(LOGFILE,rollingInterval:RollingInterval.Month))
             .CreateLogger();
 
-        UserSettings settings = new ();
-        SettingsManager<UserSettings> settingsManager = new(UserSettings.FILENAME);
-        settingsManager.SaveSettings(settings); 
-
+        
         host.Services.GetRequiredService<TerminalApp>()
         .RunAsync()
         .Wait();
