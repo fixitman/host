@@ -23,7 +23,7 @@ public partial class MainView
         SettingsManager<UserSettings> setMgr = new (UserSettings.FILENAME);
         var settings = setMgr.LoadSettings();
         string token = "";
-        LoginResponse? response;
+        LoginResponse response;
         if(settings != null && 
             settings.expiration != null &&
             settings.token != null &&
@@ -32,13 +32,9 @@ public partial class MainView
             token = settings.token;
         }else{
             response = await Login();
-            if(response !=null){
-                token = response.token;
-                setMgr.SaveSettings(new UserSettings{token=response.token, expiration=response.expiration});
-                Log.Debug("Token = {token}  expires {exp}",response.token, response.expiration);
-            }else{
-                Application.RequestStop();
-            }
+            token = response.token;
+            setMgr.SaveSettings(new UserSettings{token=response.token, expiration=response.expiration});
+            Log.Debug("Token = {token}  expires {exp}",response.token, response.expiration);
         }
         _repo = new APIReminderRepo(Constants.REPO_URL,token,Constants.REPO_PORT);
     }
@@ -47,17 +43,17 @@ public partial class MainView
         var _user = "";
         var _pass = "";
         var error = "";
-        LoginResponse? token;
+        LoginResponse? response;
         do{
             var dlg = new LoginDialog(_user,_pass,error);
             Application.Run(dlg);
-            token = await APIReminderRepo.GetToken(dlg.User,dlg.Password,Constants.REPO_URL,Constants.REPO_PORT);
-            if(token == null) {
+            response = await APIReminderRepo.GetToken(dlg.User,dlg.Password,Constants.REPO_URL,Constants.REPO_PORT);
+            if(response == null) {
                 error = "Incorrect Username or password";
                 _user = dlg.User;
                 _pass = dlg.Password;
             }
-        }while(token == null);
-        return token;
+        }while(response == null);
+        return response;
     }
 }
