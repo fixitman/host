@@ -11,7 +11,9 @@ using Reminder_WPF.Services;
 
 namespace host
 {
-    public class TerminalApp()
+    public class TerminalApp(
+        MainView _mainView
+    )
     {
         
         public async Task RunAsync(){
@@ -20,7 +22,7 @@ namespace host
                 Application.Init();
                 try
                 {
-                    Application.Run(new MainView());
+                    Application.Run(_mainView);
                 }
                 catch (System.Exception e)
                 {
