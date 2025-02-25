@@ -8,6 +8,7 @@ using System;
     using System.Reflection.Metadata;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Reminder_WPF.Models;
     using Reminder_WPF.Services;
     using Serilog;
     using Terminal.Gui;
@@ -22,17 +23,18 @@ using System;
         }
 
         private async void Run(){
-            var token = await Login();
-            _repo = new APIReminderRepo(Constants.REPO_URL,token,Constants.REPO_PORT);
-            Log.Information("Token = {token}",token);
-            
+            var response = await Login();
+            if(response !=null){
+                _repo = new APIReminderRepo(Constants.REPO_URL,response.token,Constants.REPO_PORT);
+                Log.Information("Token = {token}",response);
+            }
         }
 
-        private async Task<string> Login(){
+        private async Task<LoginResponse> Login(){
             var _user = "";
             var _pass = "";
             var error = "";
-            string? token;
+            LoginResponse? token;
             do{
                 var dlg = new LoginDialog(_user,_pass,error);
                 Application.Run(dlg);
