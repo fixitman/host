@@ -19,7 +19,6 @@ public partial class MainView
         SettingsManager<UserSettings> setMgr
     ){
         _setMgr = setMgr;
-        Settings = _setMgr.LoadSettings();
         InitializeComponent();  
             
         this.Loaded += Run;
@@ -28,6 +27,7 @@ public partial class MainView
     private async void Run(){
        
         string token;
+        Settings = await _setMgr.LoadSettingsAsync();
         LoginResponse response;
         if(Settings != null && 
             Settings.expiration != null &&
@@ -38,7 +38,7 @@ public partial class MainView
         }else{
             response = await Login();
             token = response.token;
-            _setMgr.SaveSettings(new UserSettings{token=response.token, expiration=response.expiration});
+            await _setMgr.SaveSettingsAsync(new UserSettings{token=response.token, expiration=response.expiration});
             Log.Debug("Token = {token}  expires {exp}",response.token, response.expiration);
         }
         _repo = new APIReminderRepo(Constants.REPO_URL,token,Constants.REPO_PORT);

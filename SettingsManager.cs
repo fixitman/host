@@ -26,17 +26,17 @@ namespace host;
             return Path.Combine(appData, fileName);
         }
 
-        public T? LoadSettings() => 
+        public async Task<T?> LoadSettingsAsync() => 
             File.Exists(_filePath) ?
-            JsonSerializer.Deserialize<T>(File.ReadAllText(_filePath),options):
+            JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(_filePath),options):
             null;
         
 
-        public void SaveSettings(T settings)
+        public async Task SaveSettingsAsync(T settings)
         {   
             string json = JsonSerializer.Serialize<T>(settings,options);
             var d = Path.GetDirectoryName(_filePath);
             if(d != null) Directory.CreateDirectory(d);
-            File.WriteAllText(_filePath, json);
+            await File.WriteAllTextAsync(_filePath, json);
         }
 }
