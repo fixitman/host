@@ -32,7 +32,7 @@ public partial class MainView
         if(Settings != null && 
             Settings.expiration != null &&
             Settings.token != null &&
-            DateTime.Parse(Settings.expiration) <= DateTime.Now
+            DateTime.Parse(Settings.expiration) > DateTime.Now
         ){  
             token = Settings.token;
         }else{
