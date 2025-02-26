@@ -13,11 +13,13 @@ public partial class MainView
 {
     private APIReminderRepo? _repo;
     private SettingsManager<UserSettings> _setMgr;
+    public UserSettings? Settings { get; set; }
 
     public MainView(
         SettingsManager<UserSettings> setMgr
     ){
         _setMgr = setMgr;
+        Settings = _setMgr.LoadSettings();
         InitializeComponent();  
             
         this.Loaded += Run;
@@ -25,15 +27,14 @@ public partial class MainView
 
     private async void Run(){
        
-        var settings = _setMgr.LoadSettings();
-        string token = "";
+        string token;
         LoginResponse response;
-        if(settings != null && 
-            settings.expiration != null &&
-            settings.token != null &&
-            DateTime.Parse(settings.expiration) <= DateTime.Now
+        if(Settings != null && 
+            Settings.expiration != null &&
+            Settings.token != null &&
+            DateTime.Parse(Settings.expiration) <= DateTime.Now
         ){  
-            token = settings.token;
+            token = Settings.token;
         }else{
             response = await Login();
             token = response.token;
