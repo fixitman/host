@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace host;
 
-    public class SettingsManager<T> where T : class{
+    public class SettingsManager<T> where T : new(){
         private readonly string _filePath;
         private readonly JsonSerializerOptions options = new()
         {
@@ -26,10 +26,13 @@ namespace host;
             return Path.Combine(appData, fileName);
         }
 
-        public async Task<T?> LoadSettingsAsync() => 
-            File.Exists(_filePath) ?
-            JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(_filePath),options):
-            null;
+        public async Task<T> LoadSettingsAsync(){ 
+            if(!File.Exists(_filePath)){
+                return new T();
+            } 
+            var ret =  JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(_filePath),options);
+            return ret != null? ret : new T();
+        }
         
 
         public async Task SaveSettingsAsync(T settings)
