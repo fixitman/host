@@ -1,5 +1,6 @@
 
 using System;
+using Microsoft.Extensions.Configuration;
 using Reminder_WPF.Models;
 using Reminder_WPF.Services;
 using Serilog;
@@ -8,24 +9,23 @@ using Terminal.Gui;
 namespace host.ui {
 
 
-    public partial class MainView
-
+    public partial class MainView 
     {
         private APIReminderRepo? _repo;
+        private IConfiguration config;
         private SettingsManager<UserSettings> _setMgr;
 
         public MainView(
-            SettingsManager<UserSettings> setMgr
+            SettingsManager<UserSettings> setMgr,
+            IConfiguration configuration
         ){
             _setMgr = setMgr;
-            InitializeComponent();  
-
-                
+            config = configuration;
+            InitializeComponent();
             this.Loaded += Run;
         }
 
         private async void Run(){
-        
             string token;
             LoginResponse response;
             response = await Login();
@@ -42,7 +42,7 @@ namespace host.ui {
             do{
                 var dlg = new LoginDialog(_user,_pass,error);
                 Application.Run(dlg);
-                response = await APIReminderRepo.GetToken(dlg.User,dlg.Password,Constants.REPO_URL,Constants.REPO_PORT);
+                response = await APIReminderRepo.GetToken(dlg.User,dlg.Password,config.GetValue<string>("Server:URL","NotDefined"),config.GetValue<int>("Server:Port"));
                 if(response == null) {
                     error = "Incorrect Username or password";
                     _user = dlg.User;
