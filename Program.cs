@@ -17,11 +17,10 @@ public class Program
 
 {
     private static readonly string LOGFILE = @"logs\TerminalApp.log";
-    private static IHost _host;
-
+    
     public static void Main(string[] args)
     {
-        _host = Host.CreateDefaultBuilder()
+        var _host = Host.CreateDefaultBuilder()
             .ConfigureAppConfiguration(builder =>{
                 builder.AddCommandLine(args);
             })
@@ -55,5 +54,5 @@ public class Program
         }
     }
 
-    public static IHost GetHost => _host;
+    
 }

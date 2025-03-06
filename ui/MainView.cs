@@ -1,6 +1,7 @@
 
 using System;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Reminder_WPF.Models;
 using Reminder_WPF.Services;
 using Serilog;
@@ -14,13 +15,16 @@ namespace host.ui {
         private APIReminderRepo? _repo;
         private IConfiguration config;
         private SettingsManager<UserSettings> _setMgr;
+        private IHost host;
 
         public MainView(
             SettingsManager<UserSettings> setMgr,
-            IConfiguration configuration
+            IConfiguration configuration,
+            IHost host
         ){
             _setMgr = setMgr;
             config = configuration;
+            this.host = host;
             InitializeComponent();
             this.Loaded += Run;
         }
