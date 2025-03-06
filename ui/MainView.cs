@@ -13,13 +13,11 @@ namespace host.ui {
     {
         private APIReminderRepo? _repo;
         private SettingsManager<UserSettings> _setMgr;
-        public UserSettings Settings { get; set; }
 
         public MainView(
             SettingsManager<UserSettings> setMgr
         ){
             _setMgr = setMgr;
-            Settings = new UserSettings();
             InitializeComponent();  
 
                 
@@ -29,23 +27,10 @@ namespace host.ui {
         private async void Run(){
         
             string token;
-            Settings = await _setMgr.LoadSettingsAsync();
             LoginResponse response;
-            if (Settings.token != "" &&
-                DateTime.Parse(Settings.expiration) > DateTime.Now
-            )
-            {
-                token = Settings.token;
-            }
-            else
-            {
-                response = await Login();
-                token = response.token;
-                Settings.token = response.token;
-                Settings.expiration = response.expiration;
-                await _setMgr.SaveSettingsAsync(Settings);
-                Log.Debug("Token = {token}  expires {exp}", response.token, response.expiration);
-            }
+            response = await Login();
+            token = response.token;
+            Log.Debug("Token = {token}  expires {exp}", response.token, response.expiration);
             _repo = new APIReminderRepo(Constants.REPO_URL,token,Constants.REPO_PORT);
         }
 
