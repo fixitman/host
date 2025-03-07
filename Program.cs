@@ -14,9 +14,8 @@ public class Program
 {
     private static async Task Main(string[] args)
     {
-        var _host = Host.CreateDefaultBuilder()
+        await Host.CreateDefaultBuilder()
             .UseContentRoot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!)
-            .UseConsoleLifetime()
             .ConfigureAppConfiguration(builder =>
                 builder.AddCommandLine(args)
             )
@@ -28,15 +27,7 @@ public class Program
                 )
                 .AddHostedService<StartupSvc>();
             })
-            .Build();
-           
-            
-            _host.Services.GetService<ILogger<Program>>()?.LogInformation("***************************************************************");
-            
-            await _host.RunAsync();
-            
-            
-
+            .RunConsoleAsync();
     }
 
     private class StartupSvc : BackgroundService
@@ -58,7 +49,7 @@ public class Program
         
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogDebug("Start me up!");
+            _logger.LogDebug("***********************************************************");
             Task.Run( () => {
                 Application.Init();
                 try
