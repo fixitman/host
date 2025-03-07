@@ -1,6 +1,7 @@
 
 using System;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using Reminder_WPF.Models;
 using Reminder_WPF.Services;
@@ -13,21 +14,21 @@ namespace host.ui {
     public partial class MainView 
     {
         private APIReminderRepo? _repo;
-        private IConfiguration config;
+        private IConfiguration _config;
         private SettingsManager<UserSettings> _setMgr;
-        private ILogger log {get;}
-        private IHost host;
+        private ILogger<MainView> _log {get;}
+        private IHost _host;
 
         public MainView(
             SettingsManager<UserSettings> setMgr,
             IConfiguration configuration,
             IHost host,
-            ILogger logger
+            ILogger<MainView> logger
         ){
             _setMgr = setMgr;
-            log = logger;
-            config = configuration;
-            this.host = host;
+            _log = logger;
+            _config = configuration;
+            _host = host;
             InitializeComponent();
             this.Loaded += Run;
         }
@@ -37,8 +38,8 @@ namespace host.ui {
             LoginResponse response;
             response = await Login();
             token = response.token;
-            log.Debug("Token = {token}  expires {exp}", response.token, response.expiration);
-            _repo = new APIReminderRepo(Constants.REPO_URL,token,Constants.REPO_PORT);
+            _log.LogDebug("Token = {token}  expires {exp}", response.token, response.expiration);
+            _repo = new APIReminderRepo(_config.GetValue<string>("Server:URL","UNDEFINED"),token,_config.GetValue<int>("Server:Port"));
         }
 
         private async Task<LoginResponse> Login(){
@@ -48,9 +49,9 @@ namespace host.ui {
             LoginResponse? response;
             do{
                 var dlg = new LoginDialog(_user,_pass,error);
-                log.Debug("This is logged");
+                _log.LogDebug("This is logged");
                 Application.Run(dlg);
-                response = await APIReminderRepo.GetToken(dlg.User,dlg.Password,config.GetValue<string>("Server:URL","NotDefined"),config.GetValue<int>("Server:Port"));
+                response = await APIReminderRepo.GetToken(dlg.User,dlg.Password,_config.GetValue<string>("Server:URL","NotDefined"),_config.GetValue<int>("Server:Port"));
                 if(response == null) {
                     error = "Incorrect Username or password";
                     _user = dlg.User;
