@@ -15,14 +15,17 @@ namespace host.ui {
         private APIReminderRepo? _repo;
         private IConfiguration config;
         private SettingsManager<UserSettings> _setMgr;
+        private ILogger log {get;}
         private IHost host;
 
         public MainView(
             SettingsManager<UserSettings> setMgr,
             IConfiguration configuration,
-            IHost host
+            IHost host,
+            ILogger logger
         ){
             _setMgr = setMgr;
+            log = logger;
             config = configuration;
             this.host = host;
             InitializeComponent();
@@ -34,7 +37,7 @@ namespace host.ui {
             LoginResponse response;
             response = await Login();
             token = response.token;
-            Log.Debug("Token = {token}  expires {exp}", response.token, response.expiration);
+            log.Debug("Token = {token}  expires {exp}", response.token, response.expiration);
             _repo = new APIReminderRepo(Constants.REPO_URL,token,Constants.REPO_PORT);
         }
 
@@ -45,6 +48,7 @@ namespace host.ui {
             LoginResponse? response;
             do{
                 var dlg = new LoginDialog(_user,_pass,error);
+                log.Debug("This is logged");
                 Application.Run(dlg);
                 response = await APIReminderRepo.GetToken(dlg.User,dlg.Password,config.GetValue<string>("Server:URL","NotDefined"),config.GetValue<int>("Server:Port"));
                 if(response == null) {
