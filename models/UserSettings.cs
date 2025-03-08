@@ -7,13 +7,8 @@ namespace host
 {
     public class UserSettings
     {
-        public static string FILENAME = @"Fixitman\Host\UserSettings.json";
-
-        // public required string UserName;
-        // public required string Password;
+        public static readonly string FILENAME = @"Fixitman\Host\UserSettings.json";
         public string token = "";
         public string expiration = DateTime.Now.ToString();
-
-
     }
 }
