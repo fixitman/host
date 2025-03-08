@@ -31,7 +31,7 @@ namespace host;
                 return new T();
             } 
             var ret =  JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(_filePath),options);
-            return ret != null? ret : new T();
+            return ret ?? new T();
         }
         
 
