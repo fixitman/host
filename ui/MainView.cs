@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using Reminder_WPF.Models;
 using Reminder_WPF.Services;
+using Reminder_WPF.Utilities;
 using Serilog;
 using Terminal.Gui;
 
@@ -46,19 +47,20 @@ namespace host.ui {
             var _user = "";
             var _pass = "";
             var error = "";
-            LoginResponse? response;
-            do{
-                var dlg = new LoginDialog(_user,_pass,error);
-                _log.LogDebug("This is logged");
+            Result<LoginResponse?> response;
+            do
+            {
+                var dlg = new LoginDialog(_user, _pass, error);               
                 Application.Run(dlg);
-                response = await APIReminderRepo.GetToken(dlg.User,dlg.Password,_config.GetValue<string>("Server:URL","NotDefined"),_config.GetValue<int>("Server:Port"));
-                if(response == null) {
-                    error = "Incorrect Username or password";
-                    _user = dlg.User;
-                    _pass = dlg.Password;
+                response = await APIReminderRepo.GetToken(dlg.User, dlg.Password, _config.GetValue<string>("Server:URL", "NotDefined"), _config.GetValue<int>("Server:Port"));
+                if (!response.IsFailureOrEmpty)
+                {
+                    return response.Value!;
                 }
-            }while(response == null);
-            return response;
+                error = $"{response.Error}";
+                _user = dlg.User;
+                _pass = dlg.Password;
+            } while (true);            
         }
     }
 }
