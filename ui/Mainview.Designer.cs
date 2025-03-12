@@ -15,10 +15,21 @@ namespace host.ui {
     
     public partial class MainView : Terminal.Gui.Window {
         
+        private Terminal.Gui.ColorScheme greyOnBlack;
+        
+        private Terminal.Gui.FrameView frameView;
+        
         private Terminal.Gui.ListView listView;
         
         private void InitializeComponent() {
             this.listView = new Terminal.Gui.ListView();
+            this.frameView = new Terminal.Gui.FrameView();
+            this.greyOnBlack = new Terminal.Gui.ColorScheme();
+            this.greyOnBlack.Normal = new Terminal.Gui.Attribute(Terminal.Gui.Color.DarkGray, Terminal.Gui.Color.Black);
+            this.greyOnBlack.HotNormal = new Terminal.Gui.Attribute(Terminal.Gui.Color.DarkGray, Terminal.Gui.Color.Black);
+            this.greyOnBlack.Focus = new Terminal.Gui.Attribute(Terminal.Gui.Color.Black, Terminal.Gui.Color.DarkGray);
+            this.greyOnBlack.HotFocus = new Terminal.Gui.Attribute(Terminal.Gui.Color.Black, Terminal.Gui.Color.DarkGray);
+            this.greyOnBlack.Disabled = new Terminal.Gui.Attribute(Terminal.Gui.Color.DarkGray, Terminal.Gui.Color.Black);
             this.Width = Dim.Fill(0);
             this.Height = Dim.Fill(0);
             this.X = 0;
@@ -32,11 +43,25 @@ namespace host.ui {
             this.Border.DrawMarginFrame = true;
             this.TextAlignment = Terminal.Gui.TextAlignment.Left;
             this.Title = "Welcome";
-            this.listView.Width = 20;
+            this.frameView.Width = 20;
+            this.frameView.Height = Dim.Fill(2);
+            this.frameView.X = 0;
+            this.frameView.Y = 0;
+            this.frameView.Visible = true;
+            this.frameView.Data = "frameView";
+            this.frameView.Border.BorderStyle = Terminal.Gui.BorderStyle.Single;
+            this.frameView.Border.Effect3D = false;
+            this.frameView.Border.Effect3DBrush = null;
+            this.frameView.Border.DrawMarginFrame = true;
+            this.frameView.TextAlignment = Terminal.Gui.TextAlignment.Left;
+            this.frameView.Title = "Heya";
+            this.Add(this.frameView);
+            this.listView.Width = 18;
             this.listView.Height = 3;
-            this.listView.X = Pos.Center();
-            this.listView.Y = Pos.Percent(25f);
+            this.listView.X = 0;
+            this.listView.Y = 0;
             this.listView.Visible = true;
+            //this.listView.ColorScheme = this.greyOnBlack;
             this.listView.Data = "listView";
             this.listView.TextAlignment = Terminal.Gui.TextAlignment.Left;
             this.listView.Source = new Terminal.Gui.ListWrapper(new string[] {
@@ -45,7 +70,7 @@ namespace host.ui {
                         "Item3"});
             this.listView.AllowsMarking = false;
             this.listView.AllowsMultipleSelection = true;
-            this.Add(this.listView);
+            //this.Add(this.listView);
         }
     }
 }
