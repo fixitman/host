@@ -39,6 +39,7 @@ namespace host.ui {
             //     MessageBox.Query($"","No reminders yet.","Ok");
             // }else{
               //  MessageBox.Query("Success",$"{r.Value.Count} reminders retrieved.", "Ok");
+              //}
                 var texts = Enumerable.Range(100, 200).Select(a => a.ToString()).ToList();
                 texts[1] += "abcdefghijklmnopqrstuvwxyz";
                 listView.SetSource(texts);
@@ -66,7 +67,6 @@ namespace host.ui {
                     scrollBar.Refresh();
                 };
 
-            //}
             
         }
 
