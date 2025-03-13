@@ -40,34 +40,32 @@ namespace host.ui {
             // }else{
               //  MessageBox.Query("Success",$"{r.Value.Count} reminders retrieved.", "Ok");
                 var texts = Enumerable.Range(100, 200).Select(a => a.ToString()).ToList();
-                listView.Source = new ListWrapper(texts);
+                texts[1] += "abcdefghijklmnopqrstuvwxyz";
+                listView.SetSource(texts);
                 listView.Height = Dim.Fill();
-                
-                listView.Border = new Border(){
-                    BorderStyle = BorderStyle.Single,
-                    BorderThickness = new Thickness(2), 
-                    BorderBrush = Color.White,
-                    Padding = new Thickness(5),
-                    Background = Color.Magenta
-                    };
+                listView.SelectedItemChanged += (e) => {
+                    MessageBox.Query("You chose...", texts[e.Item], "OK");
+                };
                 frameView.Add(listView);
-                
-                
 
                 var scrollBar = new ScrollBarView(listView,true);
+
                 scrollBar.ChangedPosition += () => {
                     listView.TopItem = scrollBar.Position;
+                };
+
+                scrollBar.OtherScrollBarView.ChangedPosition += () => {
+				    listView.LeftItem = scrollBar.OtherScrollBarView.Position;
                 };
 
                 listView.DrawContent += (s) => {
                     scrollBar.Size = listView.Source.Count;
                     scrollBar.Position = listView.TopItem;
+                    scrollBar.OtherScrollBarView.Size = listView.Maxlength;
+                    scrollBar.OtherScrollBarView.Position = listView.LeftItem;
+                    scrollBar.Refresh();
                 };
 
-                listView.SelectedItemChanged += (e) => {
-                    var item = texts[listView.SelectedItem];
-                    MessageBox.Query("You chose...", item, "OK");
-                };
             //}
             
         }

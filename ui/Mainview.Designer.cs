@@ -63,12 +63,8 @@ namespace host.ui {
             this.listView.Visible = true;
             //this.listView.ColorScheme = this.greyOnBlack;
             this.listView.Data = "listView";
-            this.listView.TextAlignment = Terminal.Gui.TextAlignment.Left;
-            this.listView.Source = new Terminal.Gui.ListWrapper(new string[] {
-                        "Item1",
-                        "Item2",
-                        "Item3"});
-            this.listView.AllowsMarking = false;
+            this.listView.TextAlignment = Terminal.Gui.TextAlignment.Left;            
+            this.listView.AllowsMarking = true;
             this.listView.AllowsMultipleSelection = true;
             //this.Add(this.listView);
         }
